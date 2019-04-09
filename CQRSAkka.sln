@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDSample", "DDDSample\DDDSample.csproj", "{88460D15-E8BF-417E-9A66-BB7E69271AFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDDSampleTest", "DDDSampleTest\DDDSampleTest.csproj", "{3C2DF823-7FF5-4B2A-93C8-A1165C581FBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDSampleTest", "DDDSampleTest\DDDSampleTest.csproj", "{3C2DF823-7FF5-4B2A-93C8-A1165C581FBA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FCCA29F1-F069-4D4E-8B1A-72D612C6425B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infra", "Infra", "{FCCA29F1-F069-4D4E-8B1A-72D612C6425B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "network", "network", "{D0D8D0C2-2926-4413-842E-A1FA7606896F}"
 	ProjectSection(SolutionItems) = preProject
