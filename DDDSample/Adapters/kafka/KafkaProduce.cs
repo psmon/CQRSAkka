@@ -15,11 +15,11 @@ namespace DDDSample.Adapters.kafka
         private readonly Producer<Null, string> producer;
         private readonly String topic;
 
-        public KafkaProduce(string _topic)
+        public KafkaProduce(string server,string _topic)
         {
             config = new Dictionary<string, object>
             {
-                { "bootstrap.servers", "kafka:9092" }
+                { "bootstrap.servers", server }
             };
 
             topic = _topic;
@@ -31,7 +31,7 @@ namespace DDDSample.Adapters.kafka
         public void Produce(string data)
         {
             producer.ProduceAsync(topic, null, data).Wait();
-            producer.Flush(100);
+            //producer.Flush(100);
         }
 
     }

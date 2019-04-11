@@ -14,7 +14,7 @@ namespace DDDSampleTest.Kafka
         [SetUp]
         public void Setup()
         {
-            kafkaProduce = new KafkaProduce("test_consumer");
+            kafkaProduce = new KafkaProduce("kafka:9092","test_consumer");
            
         }
 

@@ -21,8 +21,11 @@ namespace DDDSample
 {
     public class Startup
     {
+        private readonly KafkaConsumer consumer;
+
         public Startup(IConfiguration configuration)
         {
+            consumer = new KafkaConsumer("kafka:9092", "test_consumer");
             Configuration = configuration;
         }
 
@@ -33,7 +36,7 @@ namespace DDDSample
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddSingleton<ActorSystem>(_ => ActorSystem.Create("accountapi"));
+            services.AddSingleton<ActorSystem>(_ => ActorSystem.Create("cqrsakka"));
 
             services.AddDbContext<UserRepository>(options =>
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
@@ -52,21 +55,22 @@ namespace DDDSample
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
         {
+            applicationLifetime.ApplicationStopping.Register(OnShutdown);
+
             if (env.IsDevelopment())
             {
 
                 using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
                 {
                     var context = serviceScope.ServiceProvider.GetRequiredService<UserRepository>();
-                    context.Database.EnsureDeleted();
-                    context.Database.EnsureCreated();
+                    //context.Database.EnsureDeleted();
+                    //context.Database.EnsureCreated();
                     var actorSystem = serviceScope.ServiceProvider.GetRequiredService<ActorSystem>();
                     System.Console.WriteLine("Actor System Check===" + actorSystem.Name);
                 
                 }
-
 
                 app.UseDeveloperExceptionPage();
             }
@@ -82,10 +86,16 @@ namespace DDDSample
             });
 
             app.UseMvc();
-
-            KafkaConsumer consumer = new KafkaConsumer();
-            consumer.StartConsumer().Start();
+            
+            consumer.CreateConsumer(null).Start();
 
         }
+
+        private void OnShutdown()
+        {            
+            consumer.Stop();
+            System.Threading.Thread.Sleep(3000);
+        }
+
     }
 }

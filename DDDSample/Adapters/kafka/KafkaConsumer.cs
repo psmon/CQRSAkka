@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Akka.Actor;
 using Confluent.Kafka;
 using Confluent.Kafka.Serialization;
 
@@ -11,21 +12,33 @@ namespace DDDSample.Adapters.kafka
 {
     public class KafkaConsumer
     {
+        private string server;
+        private string topic;
 
-        public KafkaConsumer()
+        private CancellationToken ct;
+        CancellationTokenSource tokenSource2;
+
+        public Boolean HasMessage { get; set; }
+
+        public KafkaConsumer(string _server,string _topic)
         {
-
+            server = _server;
+            topic = _topic;
+            tokenSource2 = new CancellationTokenSource();
+            ct = tokenSource2.Token;
         }
 
-        public Task StartConsumer()
+        public void Stop()
         {
-            var tokenSource2 = new CancellationTokenSource();
-            CancellationToken ct = tokenSource2.Token;
+            tokenSource2.Cancel();
+        }
 
+        public Task CreateConsumer(IActorRef consumeAoctor)
+        {            
             var config = new Dictionary<string, object>
                 {
                     {"group.id","kafka_consumer" },
-                    {"bootstrap.servers", "kafka:9092" },
+                    {"bootstrap.servers", server },
                     { "enable.auto.commit", "false" }
                 };
 
@@ -35,16 +48,18 @@ namespace DDDSample.Adapters.kafka
 
                 // Were we already canceled?
                 ct.ThrowIfCancellationRequested();
-             
+
                 using (var consumer = new Consumer<Null, string>(config, null, new StringDeserializer(Encoding.UTF8)))
                 {
-                    consumer.Subscribe("test_consumer");
+                    consumer.Subscribe(topic);
                     consumer.OnMessage += (_, msg) => {
-                        //message(msg.Value);
-                        Console.WriteLine("kafka msg === " + msg.Value);
+                        //message(msg.Value);                        
+                        Console.WriteLine(string.Format("kafka msg {0} === {1}",msg.Offset.Value,msg.Value));
+                        if (consumeAoctor != null) consumeAoctor.Tell(new KafkaMessage(msg.Topic, msg.Value));
+                        HasMessage = true;
                     };
-                    bool moreToDo = true;
-                    while (moreToDo)
+                    
+                    while (true)
                     {
                         if (ct.IsCancellationRequested)
                         {
@@ -52,6 +67,7 @@ namespace DDDSample.Adapters.kafka
                             ct.ThrowIfCancellationRequested();
                         }
                         consumer.Poll(100);
+                        //consumer.CommitAsync();
                     }
                 }
                 
