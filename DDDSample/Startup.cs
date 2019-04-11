@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Akka.Actor;
+using DDDSample.Adapters.kafka;
 using DDDSample.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -46,7 +47,7 @@ namespace DDDSample
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
-
+            
 
         }
 
@@ -81,6 +82,10 @@ namespace DDDSample
             });
 
             app.UseMvc();
+
+            KafkaConsumer consumer = new KafkaConsumer();
+            consumer.StartConsumer().Start();
+
         }
     }
 }
