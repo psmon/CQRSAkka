@@ -24,13 +24,9 @@ namespace DDDSampleTest.Kafka
         public void TestIt()
         {
             kafkaConsumer.CreateConsumer().Start();
-            Task.Delay(1000).Wait();
-
+            
             for(int i=0;i<10;i++)
                 kafkaProduce.Produce("SomeMessage");
-
         }
-
-
     }
 }
