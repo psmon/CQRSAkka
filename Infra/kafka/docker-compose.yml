@@ -19,7 +19,7 @@ services:
         ipv4_address: 172.19.0.21
     environment:
     - KAFKA_ADVERTISED_HOST_NAME=kafka
-    - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+    - KAFKA_ZOOKEEPER_CONNECT=172.19.0.20:2181
     - ALLOW_PLAINTEXT_LISTENER=yes
 
 networks:

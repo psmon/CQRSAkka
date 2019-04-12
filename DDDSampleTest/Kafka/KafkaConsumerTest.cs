@@ -23,7 +23,7 @@ namespace DDDSampleTest.Kafka
         [Test]
         public void TestIt()
         {
-            kafkaConsumer.CreateConsumer().Start();
+            kafkaConsumer.CreateConsumer(null).Start();
             
             for(int i=0;i<10;i++)
                 kafkaProduce.Produce("SomeMessage");
