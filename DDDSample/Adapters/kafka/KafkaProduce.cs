@@ -31,7 +31,17 @@ namespace DDDSample.Adapters.kafka
         public void Produce(string data)
         {
             producer.ProduceAsync(topic, null, data).Wait();
-            //producer.Flush(100);
+            producer.Flush(100);
+        }
+
+        public async Task ProduceAsync(string data)
+        {
+            await producer.ProduceAsync(topic, null, data);
+        }
+
+        public void Flush(int milisecondTimeOut)
+        {
+            producer.Flush(milisecondTimeOut);
         }
 
     }
