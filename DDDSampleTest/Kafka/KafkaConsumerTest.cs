@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Akka.Actor;
+using Akka.TestKit;
 using Akka.TestKit.NUnit3;
 using DDDSample.Adapters.kafka;
 using NUnit.Framework;
@@ -13,25 +14,24 @@ namespace DDDSampleTest.Kafka
     public class KafkaConsumerTest : TestKit
     {
         KafkaProduce kafkaProduce;
-        KafkaConsumer kafkaConsumer; 
+        KafkaConsumer kafkaConsumer;
+        TestProbe probe;
 
         [SetUp]
         public void Setup()
         {
-            kafkaProduce = new KafkaProduce("kafka:9092", "test_consumer");
-            
             kafkaConsumer = new KafkaConsumer("kafka:9092", "test_consumer");
+            probe = this.CreateTestProbe();
+            kafkaConsumer.CreateConsumer(probe).Start();
+            
+            kafkaProduce = new KafkaProduce("kafka:9092", "test_consumer");           
         }
 
         [Test]
         public void ProduceAndConsumerTest()
         {            
-            var probe = this.CreateTestProbe();
-
-            kafkaConsumer.CreateConsumer(probe).Start();
-
             kafkaProduce.Produce("SomeMessage");
-
+            
             Within(TimeSpan.FromSeconds(3), () => {
                 
                 AwaitCondition(() => probe.HasMessages);

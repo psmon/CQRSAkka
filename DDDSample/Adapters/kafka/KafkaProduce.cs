@@ -19,7 +19,8 @@ namespace DDDSample.Adapters.kafka
         {
             config = new Dictionary<string, object>
             {
-                { "bootstrap.servers", server }
+                { "bootstrap.servers", server },
+                { "group.id","kafka_consumer" }
             };
 
             topic = _topic;
