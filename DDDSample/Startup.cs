@@ -63,11 +63,16 @@ namespace DDDSample
 
         }
 
-        protected void initDomain(IApplicationBuilder app,IServiceScope serviceScope)
+        protected void initDomain(IApplicationBuilder app,IServiceScope serviceScope, IHostingEnvironment env)
         {
             var context = serviceScope.ServiceProvider.GetRequiredService<UserRepository>();
-            //context.Database.EnsureDeleted();
-            //context.Database.EnsureCreated();
+            if (env.IsDevelopment())
+            {
+                //Test for Clean
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+            }
+
             var actorSystem = serviceScope.ServiceProvider.GetRequiredService<ActorSystem>();
             System.Console.WriteLine("Actor System Check===" + actorSystem.Name);
 
@@ -82,11 +87,11 @@ namespace DDDSample
         {
             applicationLifetime.ApplicationStopping.Register(OnShutdown);
 
-            if (env.IsDevelopment())
-            {
-                var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
-                initDomain(app, serviceScope);
+            var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
+            initDomain(app, serviceScope, env);
 
+            if (env.IsDevelopment())
+            {                
                 app.UseDeveloperExceptionPage();
             }
 
