@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Akka.Actor;
 using DDDSample.Adapters.kafka;
+using DDDSample.Domain;
 using DDDSample.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,9 +26,14 @@ namespace DDDSample
     {
         private readonly KafkaConsumer consumer;
 
+        //TODO : 설정화
+        private string kafkaServer = "kafka:9092";
+        private string kafkaTopic = "test_consumer";
+
+
         public Startup(IConfiguration configuration)
         {
-            consumer = new KafkaConsumer("kafka:9092", "test_consumer");
+            consumer = new KafkaConsumer(kafkaServer, kafkaTopic);
             Configuration = configuration;
         }
 
@@ -40,6 +46,8 @@ namespace DDDSample
 
             services.AddSingleton<ActorSystem>(_ => ActorSystem.Create("cqrsakka"));
 
+            services.AddSingleton<KafkaProduce>(_ => new KafkaProduce(kafkaServer, kafkaTopic));
+
             services.AddDbContext<UserRepository>(options =>
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -51,8 +59,21 @@ namespace DDDSample
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
-            });
-            
+            });            
+
+        }
+
+        protected void initDomain(IApplicationBuilder app,IServiceScope serviceScope)
+        {
+            var context = serviceScope.ServiceProvider.GetRequiredService<UserRepository>();
+            //context.Database.EnsureDeleted();
+            //context.Database.EnsureCreated();
+            var actorSystem = serviceScope.ServiceProvider.GetRequiredService<ActorSystem>();
+            System.Console.WriteLine("Actor System Check===" + actorSystem.Name);
+
+            var userInsertActor = actorSystem.ActorOf(UserInsertActor.Props(context), "userInsertActor1");
+
+            consumer.CreateConsumer(userInsertActor).Start();
 
         }
 
@@ -63,16 +84,8 @@ namespace DDDSample
 
             if (env.IsDevelopment())
             {
-
-                using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-                {
-                    var context = serviceScope.ServiceProvider.GetRequiredService<UserRepository>();
-                    //context.Database.EnsureDeleted();
-                    //context.Database.EnsureCreated();
-                    var actorSystem = serviceScope.ServiceProvider.GetRequiredService<ActorSystem>();
-                    System.Console.WriteLine("Actor System Check===" + actorSystem.Name);
-                
-                }
+                var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
+                initDomain(app, serviceScope);
 
                 app.UseDeveloperExceptionPage();
             }
@@ -89,8 +102,6 @@ namespace DDDSample
 
             app.UseMvc();
             
-            consumer.CreateConsumer(null).Start();
-
         }
 
         private void OnShutdown()

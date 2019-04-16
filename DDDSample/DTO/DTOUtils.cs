@@ -29,9 +29,20 @@ namespace DDDSample.DTO
         {
             T deserializedUser = new T();
             MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(json));
-            DataContractJsonSerializer ser = new DataContractJsonSerializer(deserializedUser.GetType());
-            deserializedUser = (T)ser.ReadObject(ms);
-            ms.Close();
+            try
+            {                
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(deserializedUser.GetType());
+                deserializedUser = (T)ser.ReadObject(ms);
+            }
+            catch(Exception e)
+            {
+                deserializedUser = default(T);
+            }
+            finally
+            {
+                if(ms!=null)
+                    ms.Close();
+            }            
             return deserializedUser;
         }
     }

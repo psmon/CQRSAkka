@@ -16,13 +16,12 @@ namespace Tests
         public void JsonShouldConvertString()
         {
             Person person = new Person();
-            person.name = "test";
-            person.age = 11;
+            person.NickName = "test";            
 
             string jsonStr = DTOUtils.WriteFromObject<Person>(person);
             Person person2 = DTOUtils.ReadToObject<Person>(jsonStr);
 
-            Assert.AreEqual(person.name, person2.name);            
+            Assert.AreEqual(person.NickName, person2.NickName);            
         }
         
     }

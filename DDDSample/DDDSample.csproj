@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <Folder Include="Adapters\rest\" />
-    <Folder Include="Domain\" />
     <Folder Include="Services\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>

@@ -12,10 +12,10 @@ namespace DDDSample.DTO
     public class Person
     {
         [DataMember]
-        public string name;
+        public string NickName { get; set; }
 
         [DataMember]
-        public int age;
+        public string MyId { get; set; }
     }
 
 
