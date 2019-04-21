@@ -30,8 +30,16 @@ namespace DDDSampleTest.Kafka
             kafkaConsumer.Stop();
         }
 
+
+
         [Test]
-        public void ProduceAndConsumerTest()
+        public void ProduceAndConsumerRepeatTest()
+        {
+            for (int i = 0; i < 10; i++)
+                ProduceAndConsumerTest();
+        }
+
+        private void ProduceAndConsumerTest()
         {
             Guid guid= Guid.NewGuid();
             
