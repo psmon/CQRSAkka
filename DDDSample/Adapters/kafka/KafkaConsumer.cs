@@ -30,6 +30,7 @@ namespace DDDSample.Adapters.kafka
 
         public void Stop()
         {
+            Console.WriteLine("try down KafkaConsumer.....");
             tokenSource2.Cancel();
         }
 
@@ -45,10 +46,7 @@ namespace DDDSample.Adapters.kafka
             Console.WriteLine("kafka StartConsumer ");
 
             var task = new Task(() => {
-
-                // Were we already canceled?
-                ct.ThrowIfCancellationRequested();
-
+                
                 using (var consumer = new Consumer<Null, string>(config, null, new StringDeserializer(Encoding.UTF8)))
                 {
                     consumer.Subscribe(topic);
@@ -62,13 +60,15 @@ namespace DDDSample.Adapters.kafka
                     while (true)
                     {
                         if (ct.IsCancellationRequested)
-                        {
+                        {                       
+                            Console.WriteLine("close done KafkaConsumer.....");
                             // Clean up here, then...
                             ct.ThrowIfCancellationRequested();
                         }
                         consumer.Poll(100);
                         //consumer.CommitAsync();
                     }
+
                 }
                 
             }, tokenSource2.Token);

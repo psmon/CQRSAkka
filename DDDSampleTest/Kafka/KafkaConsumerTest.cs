@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Akka.TestKit;
 using Akka.TestKit.NUnit3;
 using DDDSample.Adapters.kafka;
@@ -23,10 +24,18 @@ namespace DDDSampleTest.Kafka
             kafkaProduce = new KafkaProduce("kafka:9092", "test_consumer");           
         }
 
+        [TearDown]
+        public void Down()
+        {
+            kafkaConsumer.Stop();
+        }
+
         [Test]
         public void ProduceAndConsumerTest()
-        {            
-            kafkaProduce.Produce("SomeMessage");
+        {
+            Guid guid= Guid.NewGuid();
+            
+            kafkaProduce.Produce(guid.ToString());
             
             Within(TimeSpan.FromSeconds(3), () => {
                 
@@ -36,7 +45,7 @@ namespace DDDSampleTest.Kafka
 
                 KafkaMessage lastMessage = probe.LastMessage as KafkaMessage;
 
-                Assert.AreEqual("SomeMessage", lastMessage.message);
+                Assert.AreEqual(guid.ToString(), lastMessage.message);
 
             });
         }
