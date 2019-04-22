@@ -1,0 +1,67 @@
+{
+  "paragraphs": [
+    {
+      "text": "import pyspark\r\nimport requests\r\nimport pandas as pd\r\nimport json\r\nfrom pyspark.sql import SparkSession\r\nfrom pyspark.sql.types import *\r\nfrom pyspark.sql import SQLContext\r\n\r\nsc \u003d pyspark.SparkContext(\u0027local[*]\u0027)\r\nspark \u003d SparkSession(sc)\r\nsqlContext \u003d SQLContext(sc)\r\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-04-22 14:39:12.488",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Traceback (most recent call last):\n  File \"/tmp/zeppelin_python-772707091474990588.py\", line 320, in \u003cmodule\u003e\n    raise Exception(traceback.format_exc())\nException: Traceback (most recent call last):\n  File \"/tmp/zeppelin_python-772707091474990588.py\", line 308, in \u003cmodule\u003e\n    exec(code, _zcUserQueryNameSpace)\n  File \"\u003cstdin\u003e\", line 1, in \u003cmodule\u003e\nImportError: No module named pyspark\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1555943873187_1439989611",
+      "id": "20190422-143753_2094137491",
+      "dateCreated": "2019-04-22 14:37:53.187",
+      "dateStarted": "2019-04-22 14:39:12.593",
+      "dateFinished": "2019-04-22 14:39:16.777",
+      "status": "ERROR",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "user": "anonymous",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1555943952502_-570055518",
+      "id": "20190422-143912_1485125704",
+      "dateCreated": "2019-04-22 14:39:12.502",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "test",
+  "id": "2E8PFNC3H",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {
+    "python:shared_process": []
+  },
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}

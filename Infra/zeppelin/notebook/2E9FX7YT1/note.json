@@ -1,0 +1,88 @@
+{
+  "paragraphs": [
+    {
+      "text": "import pyspark\r\nimport requests\r\nimport pandas as pd\r\nimport json\r\nfrom pyspark.sql import SparkSession\r\nfrom pyspark.sql.types import *\r\nfrom pyspark.sql import SQLContext\r\n\r\nsc \u003d pyspark.SparkContext(\u0027local[*]\u0027)\r\nspark \u003d SparkSession(sc)\r\nsqlContext \u003d SQLContext(sc)",
+      "user": "anonymous",
+      "dateUpdated": "2019-04-22 14:39:44.980",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1555943978296_806780137",
+      "id": "20190422-143938_1567099892",
+      "dateCreated": "2019-04-22 14:39:38.296",
+      "dateStarted": "2019-04-22 14:39:45.073",
+      "status": "RUNNING",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "# test1",
+      "user": "anonymous",
+      "dateUpdated": "2019-04-22 14:41:21.713",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1555943984980_1213266110",
+      "id": "20190422-143944_1442839942",
+      "dateCreated": "2019-04-22 14:39:44.980",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "user": "anonymous",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1555944081713_-177508319",
+      "id": "20190422-144121_993489673",
+      "dateCreated": "2019-04-22 14:41:21.829",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Untitled Note 1",
+  "id": "2E9FX7YT1",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {
+    "python:shared_process": [],
+    "spark:shared_process": []
+  },
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}
