@@ -69,14 +69,14 @@ namespace DDDSample
             if (env.IsDevelopment())
             {
                 //Test for Clean
-                context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
+                //context.Database.EnsureDeleted();
+                //context.Database.EnsureCreated();
             }
 
             var actorSystem = serviceScope.ServiceProvider.GetRequiredService<ActorSystem>();
             System.Console.WriteLine("Actor System Check===" + actorSystem.Name);
 
-            var userInsertActor = actorSystem.ActorOf(UserInsertActor.Props(context), "userInsertActor1");
+            var userInsertActor = actorSystem.ActorOf(InsertUser.Props(context), "userInsertActor1");
 
             consumer.CreateConsumer(userInsertActor).Start();
 

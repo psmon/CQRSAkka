@@ -11,17 +11,17 @@ using System.Threading.Tasks;
 
 namespace DDDSample.Domain
 {
-    public class UserInsertActor : ReceiveActor
+    public class InsertUser : ReceiveActor
     {        
         private readonly ILoggingAdapter log = Context.GetLogger();
         private readonly UserRepository userRepository;
 
         public static Props Props(UserRepository _userRepository)
         {            
-            return Akka.Actor.Props.Create(() => new UserInsertActor(_userRepository));
+            return Akka.Actor.Props.Create(() => new InsertUser(_userRepository));
         }
 
-        public UserInsertActor(UserRepository _userRepository)
+        public InsertUser(UserRepository _userRepository)
         {
             userRepository = _userRepository;
             Receive<KafkaMessage>(msg => {

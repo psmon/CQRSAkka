@@ -34,5 +34,18 @@ namespace DDDSample.Controllers
             return new string[] { "value1", "value2" };
         }
 
+        [HttpGet]
+        [Route("addPerson2")]
+        public ActionResult<IEnumerable<string>> Get2()
+        {
+            Person person = new Person();
+            person.NickName = "test" + seq;
+            person.MyId = seq.ToString();
+            string jsonStr = DTOUtils.WriteFromObject<Person>(person);
+            kafkaProduce.Produce(jsonStr);
+            seq++;
+            return new string[] { "value1", "value2" };
+        }
+
     }
 }

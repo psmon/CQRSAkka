@@ -38,6 +38,14 @@
 	
 	/Infra/db/docker-compose up
 
+### .net core ㅐ그 마이그레이션
+	dotnet ef migrations add InitialCreate
+	dotnet ef database update
+	dotnet ef migrations script
+	dotnet ef migrations add AddProductReviews
+	dotnet ef database update
+
+
 ### Kafka 준비하기
 
 	/Infra/kafka/docker-compose up
