@@ -33,6 +33,12 @@ namespace DDDSampleTest.Kafka
         }
 
         [Test]
+        public void ResetTest()
+        {
+            Thread.Sleep(5000);
+        }
+
+        [Test]
         public void ProduceAndConsumerLoadTest()
         {
             int testCount = 50000;
@@ -54,7 +60,7 @@ namespace DDDSampleTest.Kafka
                     if ( (i % 1000 == 0) || i == testCount-1)
                     {
                         KafkaMessage curMessage = probe.LastMessage as KafkaMessage;
-                        Console.WriteLine(string.Format("RecevedCnt:{0} ,{1}", i, curMessage.message));
+                        Console.WriteLine(string.Format("RecevedCnt:{0} ,{1}, {2}", i, curMessage.message,curMessage.offset.Offset ));
                     }
 
                 }
