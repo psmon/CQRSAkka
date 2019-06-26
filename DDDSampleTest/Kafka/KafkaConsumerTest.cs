@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Akka.Actor;
 using Akka.Event;
+using Akka.Routing;
 using Akka.TestKit;
 using Akka.TestKit.NUnit3;
 using DDDSample.Adapters.kafka;
@@ -18,6 +19,7 @@ namespace DDDSampleTest.Kafka
         {
             Receive<KafkaMessage>(ka => {
                 log.Info(string.Format("Receved:{0} ,{1}", ka.message, ka.offset.Offset));
+                Thread.Sleep(500);
             });
         }
     }
@@ -34,9 +36,22 @@ namespace DDDSampleTest.Kafka
         {
             kafkaConsumer = new KafkaConsumer("kafka:9092", "test_consumer");
 
+            //Test Probe
             probe = this.CreateTestProbe();
+
+            //Test Actor
             myActor = this.ActorOf<MyActor>("myactor");
 
+
+            //Test Router
+            var w1 = this.ActorOf<MyActor>("w1");
+            var w2 = this.ActorOf<MyActor>("w2");
+            var w3 = this.ActorOf<MyActor>("w3");
+            var w4 = this.ActorOf<MyActor>("w4");
+            var w5 = this.ActorOf<MyActor>("w5");            
+            var router = this.ActorOf(Props.Empty.WithRouter(new RoundRobinGroup(new[] { w1, w2, w3,w4,w5 })), "some-group");
+
+            // Select probe or myActor or router
             kafkaConsumer.CreateConsumer(probe).Start();
             Thread.Sleep(1000);
             
