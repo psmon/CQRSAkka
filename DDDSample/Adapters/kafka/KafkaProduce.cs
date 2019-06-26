@@ -10,13 +10,13 @@ namespace DDDSample.Adapters.kafka
 {
     public class KafkaProduce
     {
-        private readonly ProducerConfig config;
+        //private readonly ProducerConfig config;
         private readonly IProducer<Null, string> producer;
         private readonly String topic;
 
         public KafkaProduce(string server,string _topic)
         {
-            config = new ProducerConfig { BootstrapServers = server };
+            var config = new ProducerConfig { BootstrapServers = server };
             
             topic = _topic;
 

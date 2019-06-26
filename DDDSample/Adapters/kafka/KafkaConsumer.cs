@@ -11,11 +11,9 @@ namespace DDDSample.Adapters.kafka
 {
     public class KafkaConsumer
     {
-        private string server;
-        private string topic;
+        private readonly string topic;
         private ConsumerConfig config;
-        private CancellationToken ct;
-        CancellationTokenSource tokenSource2;
+        private readonly CancellationTokenSource tokenSource2;
         public Boolean HasMessage { get; set; }
 
         public KafkaConsumer(string _server,string _topic,string groupid="default-group")
@@ -32,10 +30,8 @@ namespace DDDSample.Adapters.kafka
                 AutoOffsetReset = AutoOffsetReset.Latest
             };
             
-            server = _server;
             topic = _topic;
-            tokenSource2 = new CancellationTokenSource();
-            ct = tokenSource2.Token;
+            tokenSource2 = new CancellationTokenSource();            
         }
 
         public void Stop()

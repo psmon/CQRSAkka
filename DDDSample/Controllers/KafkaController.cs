@@ -14,7 +14,7 @@ namespace DDDSample.Controllers
     public class KafkaController
     {
         private readonly KafkaProduce kafkaProduce;
-        static int seq = 0;
+        private static int seq = 0;
 
         public KafkaController(KafkaProduce _kafkaProduce)
         {
@@ -23,7 +23,7 @@ namespace DDDSample.Controllers
 
         [HttpGet]
         [Route("addPerson")]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<IEnumerable<string>> addPerson()
         {
             Person person = new Person();
             person.NickName = "test"+seq;
@@ -36,7 +36,7 @@ namespace DDDSample.Controllers
 
         [HttpGet]
         [Route("addPerson2")]
-        public ActionResult<IEnumerable<string>> Get2()
+        public ActionResult<IEnumerable<string>> GetPerson2()
         {
             Person person = new Person();
             person.NickName = "test" + seq;
