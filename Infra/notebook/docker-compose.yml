@@ -6,7 +6,7 @@ services:
       - "9001:8888"
       - "4040-4080:4040-4080"
     volumes:
-      - ./notebooks:/home/jovyan/work/notebooks/
+      - /c/Users/notebook/:/home/jovyan/work/notebooks/
     networks:
       devnet:
         ipv4_address: 172.19.0.30
