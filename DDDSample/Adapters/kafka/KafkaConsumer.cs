@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Akka.Actor;
 using Confluent.Kafka;
-using Confluent.Kafka.Serialization;
 
 namespace DDDSample.Adapters.kafka
 {
@@ -14,14 +13,25 @@ namespace DDDSample.Adapters.kafka
     {
         private string server;
         private string topic;
-
+        private ConsumerConfig config;
         private CancellationToken ct;
         CancellationTokenSource tokenSource2;
-
         public Boolean HasMessage { get; set; }
 
-        public KafkaConsumer(string _server,string _topic)
+        public KafkaConsumer(string _server,string _topic,string groupid="default-group")
         {
+            config = new ConsumerConfig
+            {
+                GroupId = groupid,
+                BootstrapServers = _server,
+                // Note: The AutoOffsetReset property determines the start offset in the event
+                // there are not yet any committed offsets for the consumer group for the
+                // topic/partitions of interest. By default, offsets are committed
+                // automatically, so in this example, consumption will only start from the
+                // earliest message in the topic 'my-topic' the first time you run the program.
+                AutoOffsetReset = AutoOffsetReset.Latest
+            };
+            
             server = _server;
             topic = _topic;
             tokenSource2 = new CancellationTokenSource();
@@ -35,43 +45,36 @@ namespace DDDSample.Adapters.kafka
         }
 
         public Task CreateConsumer(IActorRef consumeAoctor)
-        {            
-            var config = new Dictionary<string, object>
-                {
-                    {"group.id","kafka_consumer" },
-                    {"bootstrap.servers", server },
-                    { "enable.auto.commit", "false" }
-                };
-
-            Console.WriteLine("kafka StartConsumer ");
+        {
+            Console.WriteLine($"kafka StartConsumer topic:{topic}");
 
             var task = new Task(() => {
-                
-                using (var consumer = new Consumer<Null, string>(config, null, new StringDeserializer(Encoding.UTF8)))
+                using (var c = new ConsumerBuilder<Ignore, string>(config).Build())
                 {
-                    consumer.Subscribe(topic);
-                    consumer.OnMessage += (_, msg) => {
-                        //message(msg.Value);                        
-                        //Console.WriteLine(string.Format("kafka msg {0} === {1}",msg.Offset.Value,msg.Value));
-                        if (consumeAoctor != null) consumeAoctor.Tell(new KafkaMessage(msg.Topic, msg.Value));
-                        HasMessage = true;
-                    };
-                    
-                    while (true)
+                    c.Subscribe(topic);
+                    try
                     {
-                        if (ct.IsCancellationRequested)
-                        {                       
-                            Console.WriteLine("close done KafkaConsumer.....");
-                            // Clean up here, then...
-                            ct.ThrowIfCancellationRequested();
+                        while (true)
+                        {
+                            try
+                            {
+                                var cr = c.Consume(tokenSource2.Token);
+                                consumeAoctor.Tell(new KafkaMessage(topic, cr.Value,cr.TopicPartitionOffset));
+                                //Console.WriteLine($"Consumed message '{cr.Value}' at: '{cr.TopicPartitionOffset}'.");
+                            }
+                            catch (ConsumeException e)
+                            {
+                                Console.WriteLine($"Error occured: {e.Error.Reason}");
+                            }
                         }
-                        consumer.Poll(100);
-                        //consumer.Poll();
-                        //consumer.CommitAsync();
                     }
-
-                }
-                
+                    catch (OperationCanceledException)
+                    {
+                        // Ensure the consumer leaves the group cleanly and final offsets are committed.
+                        Console.WriteLine("safe close");
+                        c.Close();
+                    }
+                }               
             }, tokenSource2.Token);
             
             return task;
