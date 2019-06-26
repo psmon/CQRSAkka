@@ -46,10 +46,10 @@ namespace DDDSampleTest.Kafka
 
             kafkaProduce.Flush(10000);
             
-            Within(TimeSpan.FromSeconds(5), () => {                               
-                for(int i = 0; i < testCount; i++)
+            Within(TimeSpan.FromSeconds(5), () => {
+                AwaitCondition(() => probe.HasMessages);
+                for (int i = 0; i < testCount; i++)
                 {
-                    AwaitCondition(() => probe.HasMessages);
                     probe.ExpectMsg<KafkaMessage>(TimeSpan.FromSeconds(1));
                     if ( (i % 1000 == 0) || i == testCount-1)
                     {

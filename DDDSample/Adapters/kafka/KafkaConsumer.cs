@@ -66,6 +66,7 @@ namespace DDDSample.Adapters.kafka
                             ct.ThrowIfCancellationRequested();
                         }
                         consumer.Poll(100);
+                        //consumer.Poll();
                         //consumer.CommitAsync();
                     }
 
