@@ -39,6 +39,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "zeppelin", "zeppelin", "{CE8715F1-1BA0-4F8E-AA67-28824CA9A360}"
 	ProjectSection(SolutionItems) = preProject
 		Infra\zeppelin\docker-compose.yml = Infra\zeppelin\docker-compose.yml
+		Infra\zeppelin\Dockerfile = Infra\zeppelin\Dockerfile
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "conf", "conf", "{E626B6DD-1A0E-4E59-963A-80C9EAAEBE99}"

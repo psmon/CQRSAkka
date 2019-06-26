@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Akka.TestKit;
 using Akka.TestKit.NUnit3;
@@ -20,8 +21,8 @@ namespace DDDSampleTest.Kafka
             kafkaConsumer = new KafkaConsumer("kafka:9092", "test_consumer");
             probe = this.CreateTestProbe();
             kafkaConsumer.CreateConsumer(probe).Start();
-            
-            kafkaProduce = new KafkaProduce("kafka:9092", "test_consumer");           
+
+            kafkaProduce = new KafkaProduce("kafka:9092", "test_consumer");
         }
 
         [TearDown]
@@ -30,7 +31,32 @@ namespace DDDSampleTest.Kafka
             kafkaConsumer.Stop();
         }
 
+        [Test]
+        public void ProduceAndConsumerLoadTest()
+        {
+            int testCount = 50000;
+            Guid lastGuid=Guid.Empty;
+            for (int i = 0; i < testCount; i++)
+            {
+                Guid guid = Guid.NewGuid();
+                kafkaProduce.ProduceAsync(guid.ToString());
+            
+                if (i == testCount - 1) lastGuid = guid;               
+            }
 
+            kafkaProduce.Flush(5000);
+            
+            Within(TimeSpan.FromSeconds(5), () => {
+                AwaitCondition(() => probe.HasMessages);               
+                for(int i = 0; i < testCount; i++)
+                {
+                    probe.ExpectMsg<KafkaMessage>(TimeSpan.FromSeconds(1));
+                }
+                KafkaMessage lastMessage = probe.LastMessage as KafkaMessage;
+                Assert.AreEqual(lastGuid.ToString(), lastMessage.message);
+            });
+            
+        }
 
         [Test]
         public void ProduceAndConsumerRepeatTest()
