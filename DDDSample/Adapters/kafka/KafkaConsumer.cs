@@ -52,7 +52,7 @@ namespace DDDSample.Adapters.kafka
                     consumer.Subscribe(topic);
                     consumer.OnMessage += (_, msg) => {
                         //message(msg.Value);                        
-                        Console.WriteLine(string.Format("kafka msg {0} === {1}",msg.Offset.Value,msg.Value));
+                        //Console.WriteLine(string.Format("kafka msg {0} === {1}",msg.Offset.Value,msg.Value));
                         if (consumeAoctor != null) consumeAoctor.Tell(new KafkaMessage(msg.Topic, msg.Value));
                         HasMessage = true;
                     };

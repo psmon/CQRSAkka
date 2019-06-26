@@ -44,13 +44,19 @@ namespace DDDSampleTest.Kafka
                 if (i == testCount - 1) lastGuid = guid;               
             }
 
-            kafkaProduce.Flush(5000);
+            kafkaProduce.Flush(10000);
             
-            Within(TimeSpan.FromSeconds(15), () => {
-                AwaitCondition(() => probe.HasMessages);               
+            Within(TimeSpan.FromSeconds(5), () => {                               
                 for(int i = 0; i < testCount; i++)
                 {
-                    probe.ExpectMsg<KafkaMessage>(TimeSpan.FromSeconds(3));
+                    AwaitCondition(() => probe.HasMessages);
+                    probe.ExpectMsg<KafkaMessage>(TimeSpan.FromSeconds(1));
+                    if ( (i % 1000 == 0) || i == testCount-1)
+                    {
+                        KafkaMessage curMessage = probe.LastMessage as KafkaMessage;
+                        Console.WriteLine(string.Format("RecevedCnt:{0} ,{1}", i, curMessage.message));
+                    }
+
                 }
                 KafkaMessage lastMessage = probe.LastMessage as KafkaMessage;
                 Assert.AreEqual(lastGuid.ToString(), lastMessage.message);
