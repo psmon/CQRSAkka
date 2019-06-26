@@ -46,11 +46,11 @@ namespace DDDSampleTest.Kafka
 
             kafkaProduce.Flush(5000);
             
-            Within(TimeSpan.FromSeconds(5), () => {
+            Within(TimeSpan.FromSeconds(15), () => {
                 AwaitCondition(() => probe.HasMessages);               
                 for(int i = 0; i < testCount; i++)
                 {
-                    probe.ExpectMsg<KafkaMessage>(TimeSpan.FromSeconds(1));
+                    probe.ExpectMsg<KafkaMessage>(TimeSpan.FromSeconds(3));
                 }
                 KafkaMessage lastMessage = probe.LastMessage as KafkaMessage;
                 Assert.AreEqual(lastGuid.ToString(), lastMessage.message);
